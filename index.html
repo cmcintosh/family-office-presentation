@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Plan for Our Family</title>
+    <style>
+        :root {
+            --color-primary: #2d6a4f;
+            --color-secondary: #40916c;
+            --color-accent: #d4a373;
+            --color-background: #fefdf8;
+            --color-text: #1b2a1f;
+            --color-text-light: #4a5d50;
+            --color-card-bg: #f0f7f4;
+            --color-warm: #f4e4c1;
+            --color-border: #c9d9cf;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--color-background);
+            color: var(--color-text);
+            font-family: Georgia, 'Times New Roman', serif;
+            overflow: hidden;
+        }
+
+        .slide-deck {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        @media (min-width: 769px) {
+            .slide-deck {
+                max-width: calc(100vh * 16 / 9);
+                max-height: calc(100vw * 9 / 16);
+                margin: auto;
+                position: absolute;
+                inset: 0;
+            }
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 60px 80px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease;
+            background: var(--color-background);
+            overflow: hidden;
+        }
+
+        .slide.active { opacity: 1; visibility: visible; }
+
+        .slide-content {
+            width: 100%;
+            max-width: 900px;
+            max-height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 24px;
+        }
+
+        h1 {
+            font-size: clamp(36px, 6vw, 64px);
+            color: var(--color-primary);
+            line-height: 1.15;
+            font-weight: 700;
+        }
+
+        h2 {
+            font-size: clamp(28px, 4.5vw, 48px);
+            color: var(--color-primary);
+            line-height: 1.2;
+            font-weight: 600;
+        }
+
+        h3 {
+            font-size: clamp(22px, 3vw, 34px);
+            color: var(--color-secondary);
+            line-height: 1.3;
+            font-weight: 600;
+        }
+
+        p {
+            font-size: clamp(20px, 2.8vw, 30px);
+            line-height: 1.6;
+            color: var(--color-text);
+            max-width: 800px;
+        }
+
+        .lead {
+            font-size: clamp(24px, 3.5vw, 38px);
+            line-height: 1.5;
+            color: var(--color-text);
+            font-style: italic;
+        }
+
+        .small {
+            font-size: clamp(16px, 2vw, 22px);
+            color: var(--color-text-light);
+        }
+
+        .highlight {
+            background: var(--color-warm);
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .green-highlight {
+            color: var(--color-primary);
+            font-weight: 700;
+        }
+
+        .card {
+            background: var(--color-card-bg);
+            border: 2px solid var(--color-border);
+            border-radius: 16px;
+            padding: 32px 40px;
+            max-width: 700px;
+            text-align: left;
+        }
+
+        .card p {
+            font-size: clamp(18px, 2.4vw, 26px);
+            margin-bottom: 12px;
+        }
+
+        .card p:last-child { margin-bottom: 0; }
+
+        .card-icon {
+            font-size: 40px;
+            margin-bottom: 8px;
+        }
+
+        .two-col {
+            display: flex;
+            gap: 32px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: stretch;
+        }
+
+        .two-col .card {
+            flex: 1;
+            min-width: 280px;
+            max-width: 380px;
+        }
+
+        .number-circle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            color: white;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .step-list {
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 750px;
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .step .number-circle {
+            flex-shrink: 0;
+            margin-top: 4px;
+        }
+
+        .step-text {
+            font-size: clamp(18px, 2.4vw, 26px);
+            line-height: 1.5;
+        }
+
+        .step-text strong {
+            color: var(--color-primary);
+        }
+
+        .qa-item {
+            text-align: left;
+            max-width: 750px;
+            margin-bottom: 20px;
+        }
+
+        .qa-item .question {
+            font-size: clamp(20px, 2.6vw, 28px);
+            color: var(--color-primary);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .qa-item .question::before {
+            content: "Q: ";
+            color: var(--color-accent);
+        }
+
+        .qa-item .answer {
+            font-size: clamp(18px, 2.3vw, 25px);
+            line-height: 1.5;
+            color: var(--color-text);
+        }
+
+        .qa-item .answer::before {
+            content: "A: ";
+            color: var(--color-secondary);
+            font-weight: 700;
+        }
+
+        .money-display {
+            font-size: clamp(48px, 8vw, 80px);
+            color: var(--color-primary);
+            font-weight: 700;
+        }
+
+        .warm-bg {
+            background: linear-gradient(135deg, #fefdf8 0%, #f4e4c1 100%);
+        }
+
+        .quote {
+            font-size: clamp(26px, 4vw, 42px);
+            color: var(--color-primary);
+            font-style: italic;
+            line-height: 1.4;
+            max-width: 700px;
+        }
+
+        .signature {
+            font-size: clamp(18px, 2.2vw, 24px);
+            color: var(--color-text-light);
+            margin-top: 24px;
+            font-style: italic;
+        }
+
+        /* Navigation */
+        .progress-bar {
+            position: fixed;
+            top: 0; left: 0;
+            height: 4px;
+            background: var(--color-primary);
+            transition: width 0.3s;
+            z-index: 1000;
+        }
+        .nav-controls {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            z-index: 1000;
+        }
+        .nav-btn {
+            background: var(--color-primary);
+            border: none;
+            color: white;
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .nav-btn:hover { background: var(--color-secondary); }
+        .slide-counter { color: var(--color-text-light); font-size: 16px; }
+
+        @media (max-width: 768px) {
+            .slide { padding: 40px 24px; }
+            .two-col { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-deck">
+
+        <!-- Slide 1: Title -->
+        <div class="slide active warm-bg">
+            <div class="slide-content">
+                <h1>A Plan for Our Family</h1>
+                <p class="lead">Taking care of what you built —<br>and making it work for generations</p>
+                <p class="signature">From Chris, with love</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: What This Is About -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>What This Is About</h2>
+                <p>I want to buy your house for <span class="green-highlight">$75,000</span>.</p>
+                <p>Not to sell it. Not to rent it out.</p>
+                <p>But to <span class="highlight">protect it</span> and use its value to help our whole family for years to come.</p>
+            </div>
+        </div>
+
+        <!-- Slide 3: Your Work -->
+        <div class="slide warm-bg">
+            <div class="slide-content">
+                <h2>You Worked Hard for This Home</h2>
+                <p>Decades at the factory. Years at the warehouse. Long days at the office.</p>
+                <p>Every paycheck, every sacrifice, every year —<br>it all went into this house.</p>
+                <p class="lead">That work means something.<br>I want to make sure it lasts.</p>
+            </div>
+        </div>
+
+        <!-- Slide 4: The Simple Plan -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>The Plan — In Simple Terms</h2>
+                <div class="step-list">
+                    <div class="step">
+                        <div class="number-circle">1</div>
+                        <div class="step-text"><strong>I buy the house from you for $75,000.</strong> You get the money. It's a real sale, fair and square.</div>
+                    </div>
+                    <div class="step">
+                        <div class="number-circle">2</div>
+                        <div class="step-text"><strong>The house goes into a family trust.</strong> Think of a trust as a safe box that holds the house for our family — forever.</div>
+                    </div>
+                    <div class="step">
+                        <div class="number-circle">3</div>
+                        <div class="step-text"><strong>The house works for the family.</strong> Its value can help fund loans for education, homes, and emergencies — for you, for me, for the kids, for grandkids.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: What This Means for You -->
+        <div class="slide warm-bg">
+            <div class="slide-content">
+                <h2>What This Means for You</h2>
+                <div class="two-col">
+                    <div class="card">
+                        <div class="card-icon">🏠</div>
+                        <p><strong>You keep living there.</strong></p>
+                        <p>Nothing changes in your day-to-day life. Same house, same driveway, same neighbors.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">💵</div>
+                        <p><strong>You get $75,000.</strong></p>
+                        <p>Money in your pocket. Use it however you want — save it, spend it, enjoy it. It's yours.</p>
+                    </div>
+                </div>
+                <p class="lead">You don't lose anything. You gain security.</p>
+            </div>
+        </div>
+
+        <!-- Slide 6: What's a Trust? -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>What's a "Trust"?</h2>
+                <p>A trust is just a <span class="highlight">safe box with rules</span>.</p>
+                <div class="card">
+                    <p>🏠 The house goes in the box.</p>
+                    <p>📋 The rules say: <em>"This house belongs to the McIntosh family. It can't be taken away. It can't be sold to a stranger. It stays in the family forever."</em></p>
+                    <p>👨‍👩‍👦 I manage the box. When I'm gone, someone else in the family takes over.</p>
+                </div>
+                <p class="small">That's it. No magic, no tricks. Just a legal way to keep things safe.</p>
+            </div>
+        </div>
+
+        <!-- Slide 7: How the House Helps the Family -->
+        <div class="slide warm-bg">
+            <div class="slide-content">
+                <h2>How the House Helps the Family</h2>
+                <p>Once the house is in the trust, its value can be used as <span class="highlight">collateral</span> — that's a fancy word for "backup."</p>
+                <div class="step-list">
+                    <div class="step">
+                        <div class="number-circle">📚</div>
+                        <div class="step-text">A grandchild needs college money? The family bank can lend it, backed by the house.</div>
+                    </div>
+                    <div class="step">
+                        <div class="number-circle">🏡</div>
+                        <div class="step-text">Someone wants to buy their first home? The family can help, using the house's value.</div>
+                    </div>
+                    <div class="step">
+                        <div class="number-circle">🚨</div>
+                        <div class="step-text">An emergency hits? The family has resources to fall back on.</div>
+                    </div>
+                </div>
+                <p class="lead">Your house becomes the foundation that holds up the whole family.</p>
+            </div>
+        </div>
+
+        <!-- Slide 8: Questions You Might Have -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Questions You Might Have</h2>
+                <div class="qa-item">
+                    <div class="question">Will I lose my house?</div>
+                    <div class="answer">No. You keep living there. The trust owns it on paper, but it's still your home in real life. Nobody is kicking you out.</div>
+                </div>
+                <div class="qa-item">
+                    <div class="question">Can someone take it from me?</div>
+                    <div class="answer">No. That's the whole point of the trust. Once it's in there, no outside person, no lawsuit, no creditor can touch it. It's locked in for the family.</div>
+                </div>
+                <div class="qa-item">
+                    <div class="question">What if I want to move?</div>
+                    <div class="answer">You can. If you ever want to downsize or move to a smaller place, we sell the house and the money goes back into the family trust to use for whatever you need next.</div>
+                </div>
+                <div class="qa-item">
+                    <div class="question">What happens when I'm gone?</div>
+                    <div class="answer">The house stays in the trust. It doesn't go through probate court. It doesn't get taxed as an inheritance. It just stays in the family, exactly like we set it up.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: The Money -->
+        <div class="slide warm-bg">
+            <div class="slide-content">
+                <h2>The Money — Simple and Clear</h2>
+                <div class="two-col">
+                    <div class="card">
+                        <p class="small">You receive:</p>
+                        <p class="money-display">$75,000</p>
+                        <p class="small">Paid to you when the sale closes.<br>Yours to keep, spend, or save.</p>
+                    </div>
+                    <div class="card">
+                        <p class="small">What happens to the house:</p>
+                        <p class="green-highlight" style="font-size: 28px;">Moves into the family trust</p>
+                        <p class="small">Protected forever.<br>Works for the family.<br>Can't be taken by outsiders.</p>
+                    </div>
+                </div>
+                <p class="small">There are no hidden fees, no mortgage payments, and no catch. I'm buying it because I love you and I want to protect what you built.</p>
+            </div>
+        </div>
+
+        <!-- Slide 10: What Happens Later -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>What Happens Down the Road</h2>
+                <div class="step-list">
+                    <div class="step">
+                        <div class="number-circle">📍</div>
+                        <div class="step-text"><strong>Right now:</strong> You live in the house. Nothing changes. You get $75,000.</div>
+                    </div>
+                    <div class="step">
+                        <div class="number-circle">⏳</div>
+                        <div class="step-text"><strong>Years from now:</strong> If you want to move, we sell the house and the money stays in the family trust for your care and the family's future.</div>
+                    </div>
+                    <div class="step">
+                        <div class="number-circle">🌿</div>
+                        <div class="step-text"><strong>For the next generation:</strong> The house (or its value) stays in the family. It helps fund education, homes, and emergencies for your kids, grandkids, and beyond.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: What I Need From You -->
+        <div class="slide warm-bg">
+            <div class="slide-content">
+                <h2>What I Need From You</h2>
+                <p>Just three things:</p>
+                <div class="step-list">
+                    <div class="step">
+                        <div class="number-circle">1</div>
+                        <div class="step-text"><strong>Talk with me.</strong> Ask me anything. Tell me your concerns. I want to hear them.</div>
+                    </div>
+                    <div class="step">
+                        <div class="number-circle">2</div>
+                        <div class="step-text"><strong>Talk to a lawyer.</strong> Not my lawyer — your lawyer. Someone who works for you, not me. I'll pay for it.</div>
+                    </div>
+                    <div class="step">
+                        <div class="number-circle">3</div>
+                        <div class="step-text"><strong>Take your time.</strong> There's no rush. No deadline. This only happens when you're comfortable and ready.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Closing -->
+        <div class="slide">
+            <div class="slide-content">
+                <p class="quote">"You spent your whole lives building something.<br>I want to make sure it lasts for generations."</p>
+                <p class="signature">— Chris</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-controls">
+        <button class="nav-btn" onclick="prevSlide()">←</button>
+        <span class="slide-counter"><span id="current">1</span> / <span id="total">12</span></span>
+        <button class="nav-btn" onclick="nextSlide()">→</button>
+    </div>
+
+    <script>
+        let current = 1;
+        const total = document.querySelectorAll('.slide').length;
+        document.getElementById('total').textContent = total;
+
+        function showSlide(n) {
+            if (n < 1) n = 1;
+            if (n > total) n = total;
+            current = n;
+            document.querySelectorAll('.slide').forEach((s, i) => {
+                s.classList.toggle('active', i === n - 1);
+            });
+            document.getElementById('current').textContent = n;
+            document.getElementById('progressBar').style.width = (n / total * 100) + '%';
+        }
+
+        function nextSlide() { showSlide(current + 1); }
+        function prevSlide() { showSlide(current - 1); }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+            if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.nav-controls')) nextSlide();
+        });
+
+        showSlide(1);
+    </script>
+</body>
+</html>
